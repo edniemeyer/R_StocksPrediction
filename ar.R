@@ -9,10 +9,10 @@ ordered_test <- csv_dolar[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
 # Use only the last two years of returns
 #dolar.tail = as.ts( tail( dolar.close, 500 ) )
 
-armaSearch = function(
+arSearch = function(
   xx,  
   minOrder=c(0,0),
-  maxOrder=c(5,5),
+  maxOrder=c(5,0),
   trace=FALSE )
 {
   bestAic = 1e9
@@ -76,7 +76,7 @@ history <- 500;
 currentIndex<-length(ordered_train$Close);
 lags<-1;
 len = NROW( xx );
-forecasts = ordered_test$Close;
+forecasts_ar = ordered_test$Close;
 repeat
 {
   nextIndex = currentIndex + 1
@@ -89,7 +89,7 @@ repeat
   yy = xx[index(xx)[(currentIndex-history-lags+1):(currentIndex-lags)]]
   
   # Find the best fit
-  bestFit = armaSearch( yy)  
+  bestFit = arSearch( yy)  
   
   if( !is.null( bestFit ) )
   {
@@ -100,7 +100,7 @@ repeat
     if( !is.logical( fore ) )
     {    
       # Save the forecast
-      forecasts[currentIndex-length(train$Close)+1] = tail( fore$pred, 1 )
+      forecasts_ar[currentIndex-length(train$Close)+1] = tail( fore$pred, 1 )
       
       # Save the model order
       #ars[currentIndex] = bestFit$model[1]
@@ -116,5 +116,5 @@ repeat
 
 
 
-MSE.arma <- sum((ordered_test$Close - forecasts)^2)/nrow(ordered_test)
-RMSE.arma <- sqrt(MSE.arma)
+MSE.ar <- sum((ordered_test$Close - forecasts_ar)^2)/nrow(ordered_test)
+RMSE.ar <- sqrt(MSE.ar)
