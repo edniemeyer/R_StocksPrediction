@@ -1,8 +1,6 @@
 library(quantmod)
 library(fArma)
 
-ordered_train <- csv_dolar[1:round(0.8*nrow(csv_dolar)),];
-ordered_test <- csv_dolar[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
 # Compute the daily returns
 #dolar.close = csv_dolar$Close
 
@@ -114,7 +112,9 @@ repeat
   }
 }
 
+den_forecasts_ar <- mapply(minMaxDenormalize,forecasts_ar,dolarminvec,dolarmaxvec)
 
-
-MSE.ar <- sum((ordered_test$Close - forecasts_ar)^2)/nrow(ordered_test)
+MSE.ar <- sum((ordered_test_puro$Close - den_forecasts_ar)^2)/nrow(ordered_test_puro)
 RMSE.ar <- sqrt(MSE.ar)
+
+

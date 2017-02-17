@@ -1,7 +1,5 @@
 library(TSPred)
 
-ordered_train <- csv_dolar[1:round(0.8*nrow(csv_dolar)),];
-ordered_test <- csv_dolar[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
 # Compute the daily returns
 #dolar.close = csv_dolar$Close
 
@@ -43,6 +41,8 @@ repeat
 
 }
 
+den_forecasts_arima <- mapply(minMaxDenormalize,forecasts_arima,dolarminvec,dolarmaxvec)
 
-MSE.arima <- sum((ordered_test$Close - forecasts_arima)^2)/nrow(ordered_test)
+
+MSE.arima <- sum((ordered_test_puro$Close - den_forecasts_arima)^2)/nrow(ordered_test_puro)
 RMSE.arima <- sqrt(MSE.arima)

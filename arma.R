@@ -1,8 +1,6 @@
 library(quantmod)
 library(fArma)
 
-ordered_train <- csv_dolar[1:round(0.8*nrow(csv_dolar)),];
-ordered_test <- csv_dolar[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
 # Compute the daily returns
 #dolar.close = csv_dolar$Close
 
@@ -76,7 +74,7 @@ history <- 500;
 currentIndex<-length(ordered_train$Close);
 lags<-1;
 len = NROW( xx );
-forecasts = ordered_test$Close;
+forecasts_arma = ordered_test$Close;
 repeat
 {
   nextIndex = currentIndex + 1
@@ -100,7 +98,7 @@ repeat
     if( !is.logical( fore ) )
     {    
       # Save the forecast
-      forecasts[currentIndex-length(train$Close)+1] = tail( fore$pred, 1 )
+      forecasts_arma[currentIndex-length(train$Close)+1] = tail( fore$pred, 1 )
       
       # Save the model order
       #ars[currentIndex] = bestFit$model[1]
@@ -115,6 +113,9 @@ repeat
 }
 
 
+den_forecasts_arma <- mapply(minMaxDenormalize,forecasts_arma,dolarminvec,dolarmaxvec)
 
-MSE.arma <- sum((ordered_test$Close - forecasts)^2)/nrow(ordered_test)
+MSE.arma <- sum((ordered_test_puro$Close - den_forecasts_arma)^2)/nrow(ordered_test_puro)
 RMSE.arma <- sqrt(MSE.arma)
+
+

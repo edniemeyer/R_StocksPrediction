@@ -2,6 +2,11 @@
 csv_dolar<-read.csv('normalizados-Dolar.csv')
 csv_ibov<-read.csv('normalizado-Ibov.csv')
 
+ordered_train <- csv_dolar[1:round(0.8*nrow(csv_dolar)),];
+ordered_test <- csv_dolar[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
+ordered_train_puro <- csv_dolar_puro[1:round(0.8*nrow(csv_dolar)),];
+ordered_test_puro <- csv_dolar_puro[round(0.8*nrow(csv_dolar)):length(csv_dolar$Close),];
+
 #separando treino e teste
 index <- sample(1:nrow(csv_dolar),round(0.8*nrow(csv_dolar)))
 train <- csv_dolar[index,]
