@@ -1,6 +1,6 @@
 #lendo csv
-csv_dolar_puro<-read.csv('dados-Dolar.csv')
-csv_ibov_puro<-read.csv('dados-Ibov.csv')
+#csv_dolar_puro<-read.csv('dados-Dolar.csv')
+#csv_ibov_puro<-read.csv('dados-Ibov.csv')
 
 #min max normalization
 
@@ -8,14 +8,15 @@ minMaxNormalize <- function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
 
-dolar_minMax <- as.data.frame(lapply(csv_dolar_puro,minMaxNormalize))
+
+dolar_minMax <- as.data.frame(lapply(csv_dolar,minMaxNormalize))
 ibov_minMax <- as.data.frame(lapply(csv_ibov_puro,minMaxNormalize))
 
 
 #min max denormaliztion
 
-dolarminvec <- sapply(csv_dolar_puro,min)
-dolarmaxvec <- sapply(csv_dolar_puro,max)
+dolarminvec <- min(csv_dolar$Close)
+dolarmaxvec <- max(csv_dolar$Close)
 minMaxDenormalize <- function(x,minval,maxval) {
   x*(maxval-minval) + minval
 }

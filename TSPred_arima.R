@@ -1,4 +1,5 @@
 library(TSPred)
+library(zoo)
 
 # Compute the daily returns
 #dolar.close = csv_dolar$Close
@@ -13,12 +14,12 @@ library(TSPred)
 # xx is the return series
 # history is look-back period to consider at each point
 
-xx <- csv_dolar$Close;
-history <- 500;
-currentIndex<-length(ordered_train$Close);
+xx <- total_normalizado$Close;
+history <- 1003;
+currentIndex<-length(train$Close);
 lags<-1;
 len = NROW( xx );
-forecasts_arima = ordered_test$Close;
+forecasts_arima = test$Close;
 repeat
 {
   nextIndex = currentIndex + 1
@@ -41,8 +42,17 @@ repeat
 
 }
 
-den_forecasts_arima <- mapply(minMaxDenormalize,forecasts_arima,dolarminvec,dolarmaxvec)
+den_forecasts_arima <- mapply(minMaxDenormalize,forecasts_arima,min(total$Close),max(total$Close))
+den_forecasts_arima <- den_forecasts_arima[-c(length(den_forecasts_arima))] # removendo ultimo registro
 
+#MSE.arima <- sum((ordered_test_puro$Close - den_forecasts_arima)^2)/nrow(ordered_test_puro)
+#RMSE.arima <- sqrt(MSE.arima)
 
-MSE.arima <- sum((ordered_test_puro$Close - den_forecasts_arima)^2)/nrow(ordered_test_puro)
-RMSE.arima <- sqrt(MSE.arima)
+whitenoise.arima <- (den_forecasts_arima - ordered_test_2003$Close);
+accuracy.arima <- sum(whitenoise.arima^2)/nrow(ordered_test_2003); #MSE
+#RMSE.lm <- sqrt(MSE.lm)
+
+precision.arima <-  qt(0.975,df=length(whitenoise.arima)-1)*sd(whitenoise.arima)/sqrt(length(whitenoise.arima)); #confidence interval
+
+error.arima <- precision.arima + accuracy.arima;
+
