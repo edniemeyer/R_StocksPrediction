@@ -36,14 +36,14 @@ repeat
   forecasts_arima[currentIndex-length(train$Close)+1] = arimapred(yy,n.ahead=forecastLength)[1]
   
   
-  if( nextIndex > len ) break
+  if( nextIndex > len -1) break
   
   currentIndex = nextIndex
 
 }
 
 den_forecasts_arima <- mapply(minMaxDenormalize,forecasts_arima,min(total$Close),max(total$Close))
-den_forecasts_arima <- den_forecasts_arima[-c(length(den_forecasts_arima))] # removendo ultimo registro
+#den_forecasts_arima <- den_forecasts_arima[-c(length(den_forecasts_arima))] # removendo ultimo registro
 
 #MSE.arima <- sum((ordered_test_puro$Close - den_forecasts_arima)^2)/nrow(ordered_test_puro)
 #RMSE.arima <- sqrt(MSE.arima)

@@ -1,7 +1,7 @@
 library(TSPred)
 
 #fitting linear regression
-fittest <- fittestLM(train,test, maxorder=1)
+fittest <- fittestLM(train[,1],test[,1], maxorder=5, se.fit=TRUE, filtered=TRUE)
 #fittest model information
 fittest$rank[1,]
 #predictions of the fittest model
